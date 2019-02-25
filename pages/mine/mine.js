@@ -17,14 +17,13 @@ Page({
    */
   onLoad: function (options) {
     this.setData({
-      restTime:app.globalData.RestTime,
-      taskTime:app.globalData.TaskTime
+      taskTime:(app.globalData.TaskTime)/60,
+      Num:app.globalData.count,
+      allNum:(app.globalData.allTime)/60
     })
+    console.log(2)
   },
   sliderTask(e){
-    app.globalData.TaskTime = e.detail.value
-  },
-  sliderRest(e){
-    app.globalData.RestTime = e.detail.value
+    app.globalData.TaskTime = e.detail.value*60
   }
 })

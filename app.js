@@ -36,8 +36,8 @@ App({
   globalData: {
     userInfo: null,
     count:0,
-    taskName:"工作",
-    TaskTime:25,
-    RestTime:5,
+    taskMusic:"https://7869-xiao622-8a4de3-1258684935.tcb.qcloud.la/music/Evan Call - Across the Violet Sky.mp3?sign=52c68f43e73603a589fb6dc2b45a868e&t=1551084994",
+    TaskTime:1500,
+    allTime:0,
   }
 })

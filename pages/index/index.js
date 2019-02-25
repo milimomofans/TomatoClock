@@ -1,102 +1,153 @@
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isRunning: false,
-    bool:true,
+    FirstRun:false,
+    isRunning: true,
+    step:1,
+    num:0,
+    start:-0.5 * Math.PI,
+    end:1.5 * Math.PI,
+    time:null,
+    n:5,
+    audioCtx:null,
+    audioState:true,
+    src:null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.data.n = app.globalData.TaskTime
+    this.setData({
+      src:app.globalData.taskMusic
+    })
   },
-
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    this.strat()
-  },
-
-  strat() {
-    var step = 1,//计数动画次数
-      num = 0,//计数倒计时秒数（n - num）
-      start = -0.5 * Math.PI,// 开始的弧度
-      end = 1.5 * Math.PI,// 结束的弧度
-      time = null;// 计时器容器
-    // console.log(this.data)
-    var n = 5; // 当前倒计时
-    // 动画函数
-    function animation() {
-      if (step <= n && this.bool) {
-        end = end + 2 * Math.PI / n;
-        ringMove(start, end);
-        step++;
-      } else {
-        clearInterval(time);
-        this.isRunning = false
-      }
-    };
-    // 画布绘画函数
-    function ringMove(s, e) {
-      var context = wx.createCanvasContext('round')
-
-      var gradient = context.createLinearGradient(200, 100, 100, 200);
-      gradient.addColorStop("0", "#2661DD");
-      gradient.addColorStop("0.5", "#40ED94");
-      gradient.addColorStop("1.0", "#5956CC");
-
-      // 绘制圆环
-      context.setStrokeStyle('white')
-      context.beginPath()
-      context.setLineWidth(3)
-      context.arc(150, 150, 130, s, e, true)
-      context.stroke()
-      context.closePath()
-
-      var minute = parseInt((n - num) / 60)
-      if (minute < 10) {
-        minute = "0" + minute
-      }
-      var seconds = (n - num) % 60
-      if (seconds < 10) {
-        seconds = "0" + seconds
-      }
-      // 绘制倒计时文本
-
-      context.beginPath()
-      context.setLineWidth(1)
-      context.setFontSize(40)
-      context.setFillStyle('#ffffff')
-      context.setTextAlign('center')
-      context.setTextBaseline('middle')
-      context.fillText(minute + ":" + seconds, 150, 150, 100)
-      context.fill()
-      context.closePath()
-
-      context.draw()
-
-      // 每完成一次全程绘制就+1
-      num++;
+    if(!this.data.FirstRun){
+      this.strat()
+    }else{
+      setData({
+        FirstRun:true
+      })
+      return
     }
-    // 倒计时前先绘制整圆的圆环
-    ringMove(start, end);
+    this.data.audioCtx = wx.createAudioContext('myAudio')
+    this.data.audioCtx.play()
+  },
+  //开始时调用时间
+  strat() {
+    this.ringMove(this.data.start, this.data.end);
     // 创建倒计时
-    time = setInterval(animation.bind(this.data), 1000);
+    this.data.time = setInterval(this.animation.bind(this.data), 1000);
   },
-  btn(){
+  //循环
+  animation() {
+    if (this.data.step <= this.data.n && this.data.isRunning) {
+      var End = this.data.end
+      End = End+2*Math.PI/this.data.n
+      var Step = this.data.step+1
+      this.setData({
+        end:End,
+        step:Step
+      })
+      this.ringMove(this.data.start, this.data.end);
+    } else {
+      var Time = app.globalData.allTime
+      var count = app.globalData.count
+      Time +=this.data.n
+      count +=1
+      app.globalData.allTime =Time
+      app.globalData.count = count    
+      this.giveUp()
+      console.log(app.globalData.allTime,app.globalData.count)
+    }
+  },
+  //绘图以及显示剩余时间
+  ringMove(s, e) {
+    var context = wx.createCanvasContext('round')
+
+    var gradient = context.createLinearGradient(200, 100, 100, 200);
+    gradient.addColorStop("0", "#2661DD");
+    gradient.addColorStop("0.5", "#40ED94");
+    gradient.addColorStop("1.0", "#5956CC");
+
+    // 绘制圆环
+    context.setStrokeStyle('white')
+    context.beginPath()
+    context.setLineWidth(3)
+    context.arc(150, 150, 130, s, e, true)
+    context.stroke()
+    context.closePath()
+
+    var minute = parseInt((this.data.n - this.data.num) / 60)
+    if (minute < 10) {
+      minute = "0" + minute
+    }
+    var seconds = (this.data.n - this.data.num) % 60
+    if (seconds < 10) {
+      seconds = "0" + seconds
+    }
+    // 绘制倒计时文本
+
+    context.beginPath()
+    context.setLineWidth(1)
+    context.setFontSize(40)
+    context.setFillStyle('#ffffff')
+    context.setTextAlign('center')
+    context.setTextBaseline('middle')
+    context.fillText(minute + ":" + seconds, 150, 150, 100)
+    context.fill()
+    context.closePath()
+
+    context.draw()
+
+    // 每完成一次全程绘制就+1
+    this.data.num++;
+  },
+  //开关
+  pause(){
     this.setData({
-      bool:false
+      isRunning:false
+    })
+    clearInterval(this.data.time);
+    this.data.audioCtx.pause()
+  },
+  continue(){
+    this.setData({
+      isRunning:true
+    })
+    this.data.time = setInterval(this.animation.bind(this.data), 1000);
+    this.data.audioCtx.play()
+  },
+  giveUp(){
+    clearInterval(this.data.time);
+    wx.switchTab({
+      url: '../task/task',
     })
   },
-  btn1(){
+  stop(){
+  
+   if(this.data.isRunning){
     this.setData({
-      bool:true
+      audioState:false
     })
-    console.log(this.strat())
+    this.data.audioCtx.pause()
+   }
+  },
+  play(){
+    if(this.data.isRunning){
+      this.setData({
+        audioState:true
+      })
+      this.data.audioCtx.play()
+     }
   }
 })
