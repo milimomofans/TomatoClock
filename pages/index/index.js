@@ -1,4 +1,3 @@
-// const clock = require('./clock').clock
 Page({
 
   /**
@@ -6,6 +5,7 @@ Page({
    */
   data: {
     isRunning: false,
+    bool:true,
   },
 
   /**
@@ -19,57 +19,10 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.strat()
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
   strat() {
-    if (this.data.isRunning) {
-      return
-    } else {
-      this.data.isRunning = true
-    }
-    
     var step = 1,//计数动画次数
       num = 0,//计数倒计时秒数（n - num）
       start = -0.5 * Math.PI,// 开始的弧度
@@ -79,7 +32,7 @@ Page({
     var n = 5; // 当前倒计时
     // 动画函数
     function animation() {
-      if (step <= n) {
+      if (step <= n && this.bool) {
         end = end + 2 * Math.PI / n;
         ringMove(start, end);
         step++;
@@ -134,8 +87,16 @@ Page({
     ringMove(start, end);
     // 创建倒计时
     time = setInterval(animation.bind(this.data), 1000);
-
-
-
+  },
+  btn(){
+    this.setData({
+      bool:false
+    })
+  },
+  btn1(){
+    this.setData({
+      bool:true
+    })
+    console.log(this.strat())
   }
 })

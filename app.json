@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/task/task",
     "pages/mine/mine"
+
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -18,7 +20,7 @@
       {
         "iconPath": "images/icon/clock.png",
         "selectedIconPath":"images/icon/clock1.png",
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/task/task",
         "text": "计时"
       },
       {

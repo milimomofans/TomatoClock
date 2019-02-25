@@ -34,6 +34,10 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    count:0,
+    taskName:"工作",
+    TaskTime:25,
+    RestTime:5,
   }
 })

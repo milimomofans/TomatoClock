@@ -1,19 +1,8 @@
 <!--index.wxml-->
 <view class="timer-main">
-  <view class="timer">
-    <canvas canvas-id="round" style="width:100%;height:100%;"></canvas>
+  <view class="timer" >
+    <canvas   canvas-id="round" style="width:100%;height:100%;"></canvas>
   </view>
-</view>
-<view class="timer-foot">
-  <input placeholder='请输入任务名字' class="foot-input"></input>
-
-  <view class="choose-task">
-    <button bindtap="strat">开始画圆</button>
-     <view class="task">      
-       <text>工作</text>
-     </view>
-     <view class='task'>
-       <text>休息</text>
-     </view>
-  </view>
+  <button bindtap="btn">关闭</button>
+  <button bindtap="btn1">开启</button>
 </view>
